@@ -1,0 +1,87 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: dev-build-and-deploy-application
+  namespace: app-dev
+spec:
+  params:
+  - name: APP_NAME
+    type: string
+    default: "eap-app"
+  - name: SOURCE_GIT_URL
+    type: string
+    default: "https://github.com/aaronjee/openshift.git"
+  - name: SOURCE_GIT_REVISION
+    type: string
+    default: "master"
+  - name: SOURCE_GIT_CONTEXT_DIR
+    type: string
+    default: "eapapp"
+  - name: NAMESPACE_DEV
+    type: string
+    default: "app-dev"
+  workspaces:
+  - name: app-source
+  tasks:
+  - name: git-clone
+    taskRef:
+      kind: ClusterTask
+      name: git-clone
+    params:
+    - name: url
+      value: $(params.SOURCE_GIT_URL)
+    - name: revision
+      value: $(params.SOURCE_GIT_REVISION)
+    - name: deleteExisting
+      value: "true"
+    workspaces:
+    - name: output
+      workspace: app-source
+  - name: generate-tag
+    taskRef:
+      kind: Task
+      name: generate-tag
+  - name: build-image
+    runAfter:
+    - git-clone
+    - generate-tag
+    taskRef:
+      kind: Task
+      name: s2i-binary
+    params:
+    - name: FROM_DIRECTORY
+      value: /workspace/source/eapapp/ROOT.war
+    - name: NAMESPACE
+      value: $(params.NAMESPACE_DEV)
+    - name: BUILDCONFIG
+      value: $(params.APP_NAME)
+    workspaces:
+    - name: source
+      workspace: app-source
+  - name: tag-image-for-development
+    runAfter:
+    - build-image
+    taskRef:
+      kind: Task
+      name: openshift-client
+    params:
+    - name: ARGS
+      value:
+      - tag
+      - $(params.NAMESPACE_DEV)/$(params.APP_NAME):latest
+      - $(params.NAMESPACE_DEV)/$(params.APP_NAME):dev-$(tasks.generate-tag.results.image-tag)
+  - name: set-image-in-dev
+    runAfter:
+    - tag-image-for-development
+    taskRef:
+      kind: Task
+      name: openshift-client
+    params:
+    - name: ARGS
+      value:
+      - set
+      - image
+      - deployment
+      - $(params.APP_NAME)
+      - $(params.APP_NAME)=image-registry.openshift-image-registry.svc:5000/$(parmas.NAMESPACE_DEV)/$(params.APP_NAME):dev-$(tasks.generate-tag.results.image-tag)
+      - -n $(params.NAMESPACE_DEV)
