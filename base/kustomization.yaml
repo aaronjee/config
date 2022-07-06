@@ -1,6 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
 - deployment.yaml
 - service.yaml
 - route.yaml
 - buildconfig.yaml
 - imagestream.yaml
+
+commonLabels:
+  app: dev-petclinic
