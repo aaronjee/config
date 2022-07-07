@@ -13,3 +13,4 @@ namespace: gitops-dev
 
 patches:
 - ./deployment-patches.yaml
+

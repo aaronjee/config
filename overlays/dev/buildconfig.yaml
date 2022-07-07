@@ -6,7 +6,7 @@ spec:
   source:
     git:
       ref: main
-      uri: 'https://github.com/aaronjee/gmarket/petclinic'
+      uri: 'https://github.com/aaronjee/gmarket'
     type: Git
   output:
     to:
