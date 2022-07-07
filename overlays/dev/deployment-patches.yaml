@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
       - name: petclinic
-        image: image-registry.openshift-image-registry.svc:5000/gitops-dev/petclinic:dev-2021
+        image: image-registry.openshift-image-registry.svc:5000/gitops-dev/petclinic:latest
