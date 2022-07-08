@@ -1,21 +1,45 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Deployment
 metadata:
-  name: petclinic-deployment
   labels:
-    app: petclinic
+    application: petclinic
+  name: petclinic
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: petclinic
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: petclinic
+        application: petclinic
+      name: petclinic
     spec:
       containers:
-      - name: petclinic
-        image: image-registry.openshift-image-registry.svc:5000/cicd/petclinic:latest
+      - env: []
+        image: petclinic
+        imagePullPolicy: Always
+        name: petclinic
         ports:
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
         - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+      terminationGracePeriodSeconds: 75
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - petclinic
+      from:
+        kind: ImageStreamTag
+        name: petclinic:latest
+    type: ImageChange
+  - type: ConfigChange
