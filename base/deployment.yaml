@@ -8,7 +8,7 @@ spec:
   replicas: 1
   selector:
     deploymentConfig: petclinic
-    app: petclinic
+    application: petclinic
   strategy:
     type: Recreate
   template:
