@@ -3,12 +3,12 @@ kind: Route
 metadata:
   labels:
     app: petclinic
-  name: petclinic-route
+  name: petclinic
 spec:
   port:
     targetPort: 8080-tcp
   to:
     kind: Service
-    name: petclinic-service
+    name: petclinic
     weight: 100
   wildcardPolicy: None

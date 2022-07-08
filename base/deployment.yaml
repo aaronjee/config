@@ -3,10 +3,11 @@ kind: DeploymentConfig
 metadata:
   labels:
     application: petclinic
-  name: petclinic-deployment
+  name: petclinic
 spec:
   replicas: 1
   selector:
+    deploymentConfig: petclinic
     app: petclinic
   strategy:
     type: Recreate
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         application: petclinic
+        deploymentConfig: petclinic
       name: petclinic
     spec:
       containers:
