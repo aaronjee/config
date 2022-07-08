@@ -19,7 +19,6 @@ spec:
         kind: ImageStreamTag
         name: 'java:latest'
         namespace: openshift
-      env: []
   triggers:
     - type: ImageChange
       imageChange: {}
