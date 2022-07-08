@@ -9,6 +9,7 @@ spec:
   selector:
     deploymentConfig: petclinic
     application: petclinic
+    app: petclinic
   strategy:
     type: Recreate
   template:
@@ -16,6 +17,7 @@ spec:
       labels:
         application: petclinic
         deploymentConfig: petclinic
+        app: petclinic
       name: petclinic
     spec:
       containers:

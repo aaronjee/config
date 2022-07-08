@@ -10,6 +10,7 @@ spec:
   selector:
     deploymentConfig: petclinic
     application: petclinic
+    app: petclinic
   ports:
   - name: 8080-tcp
     port: 8080
