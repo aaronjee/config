@@ -9,6 +9,7 @@ metadata:
 spec:
   selector:
     deploymentConfig: petclinic
+    application: petclinic
   ports:
   - name: 8080-tcp
     port: 8080
